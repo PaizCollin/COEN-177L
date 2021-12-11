@@ -1,0 +1,12 @@
+1. No, the result is not the same each time the program is run.
+If I was doing something else while also running this program, the 
+threads would run in a different order and might repeat the thread
+number more often than it already had. The go() function's local 
+variable is shared which is why some threads repeat the same value.
+The main() function's local variable i is per-thread, and is stored
+in the stack. 
+
+2. When the second for loop is deleted, the main function no longer
+waits for the threads it created to finish, so the threads are created,
+and then before they can finish executing, the main program terminates,
+cutting off the threads from completing their tasks. 

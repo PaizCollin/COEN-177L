@@ -1,0 +1,6 @@
+#Name: Collin Paiz
+#Date: 22 September 2021
+#Title: Lab 1 - Observations
+#Description: Observations of the two shell scripts
+
+Both shell scripts are very similar to each other and use the same functionality, the main difference being what they are calculating. There is a different method of calculating a floating point variable which is necessary for computer the area of a circle, but not necessarily essential for calculating the area of some rectangles. 

@@ -1,0 +1,18 @@
+1. Open a terminal on your local machine and type 'setup vmware'
+2. Type 'minix-get-image' to get a fresh image of minix on your machine (this will overwrite any previous minix currently on your machine)
+3. Type 'vmware &' to launch vmware
+4. Once vmware is open, open an existing minix file and choose minix3 the minix3 file in the containing folder
+5. Start the virtual machine
+6. When prompted, login using the username 'root'
+7. Type 'passwd' to setup your password (only do this once)
+8. Type 'tcpd ftp /usr/bin/in.ftpd &' to open a connection to the virtual machine
+9. Type 'ifconfig' to obtain the virtual machine's ip address
+10. Go to the local terminal and type 'ftp <ip address>' to connect to the virtual machine
+11. In the local terminal, use commands such as ls, pwd, and cd to show the contents of the remote directory, show the current location of the virtual machine, and change the directory on the virtual machine (respectively). Use lcd to change the directory of the local machine. Use get <file> and put <file> to move a file from the virtual machine to the local machine, and vice versa (respectively).
+12. Use the grep command (in the virtual machine) to locate a file in /usr/src that contains the minix startup announcement
+	- (The file is /usr/src/kernel/main.c)
+13. Once you have located the file, copy it onto the local machine
+14. On the local machine, make a change to indicate that you have located the correct file
+15. Copy the file back onto the virtual machine. If there are issues with copying, be sure to remove the file from the virtual machine first using the rm command
+16. Once the edited file is copied back onto the virtual machine, move into the /usr/src directory and type ‘make world’
+17. Once that is completed, ‘reboot’ the virtual machine and check to make sure that the startup has changed according to your edits

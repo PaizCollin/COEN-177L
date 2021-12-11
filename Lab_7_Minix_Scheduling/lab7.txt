@@ -1,0 +1,68 @@
+Collin Paiz
+Professor Al-Agtash
+COEN 177L
+3 November 2021
+
+Lab 7
+
+
+Steps:
+1. Locate the scheduler function on /usr/src/kernel using the grep utility command. The function you are looking for uses the keywords ‘pick’ and ‘proc’ to run the next process. The function selects which process to run from a set of queues that hold processes that are in the ready state, starting from priority q=0 to q=NR_SCHED_QUEUES
+2. After locating the file, change the function to include a random selection of any lower-level priority job. High priority jobs are 0, 1, and 2. Negligent alterations to the priority queue can result in the operating system’s failure
+	- Randomness changes how the scheduler behaves (what process comes next)
+	- Do not skip over higher priority jobs (q = 0, 1, 2)
+	- Do not reassign q to a high priority job, only reassign to a lower priority job
+3. Making the probability of a scheduling change too high can cause the kernel to slow down. Making the probability of a change too low may result in no noticeable change in the kernel
+4. Use ftp commands (get <file name>) to bring the file you found onto your local machine. Locate the function that the kernel uses to select the next process to run (from q = 0 to q = NR_SCHED_QUEUES)
+5. Make edits to this file so that the kernel implements the process scheduling changes detailed in step 2. The goal is to have a random possibility that the next job selected by the kernel is of an unpredictable priority number. 
+6. Save your changes and put the file back into the virtual machine (put <file name>). Ensure that you are in the correct directory on both your local machine and virtual machine. Go into /usr/src on your virtual machine and ‘make world’ to rebuild the Minix system.
+7. Reboot the system and record your observations during the reboot. Note the amount of time it takes to reboot and compare that to rebooting the virtual machine from a fresh image. 
+
+
+
+Observations:
+Modified Time: 2:59
+Original Time: 1:18
+
+When proc.c was modified, it greatly slowed down the reboot; each line of text came in at a much slower pace compared to the original. 
+
+Proc.c modification:
+PRIVATE struct proc * pick_proc(void)
+{
+/* Decide who to run now.  A new process is selected an returned.
+ * When a billable process is selected, record it in 'bill_ptr', so that the 
+ * clock task can tell who to bill for system time.
+ */
+  register struct proc *rp;			/* process to run */
+  int q, randNum;				/* iterate over queues */
+
+  /* Check each of the scheduling queues for ready processes. The number of
+   * queues is defined in proc.h, and priorities are set in the task table.
+   * The lowest queue contains IDLE, which is always ready.
+   */
+  for (q=0; q < NR_SCHED_QUEUES; q++) {	
+	randNum = rand() % 10; 			/* random value 0-9 */
+
+	/* 20% chance that if q > 2 (low priority), reassign q */
+	if(randNum <= 2 && q > 2) {
+		q = q % (NR_SCHED_QUEUES - 3) + 3;
+	}
+
+	if(!(rp = rdy_head[q])) {
+		TRACE(VF_PICKPROC, printf("queue %d empty\n", q););
+		continue;
+	}
+
+#if DEBUG_RACE
+	rp = random_process(rdy_head[q]);
+#endif
+
+	TRACE(VF_PICKPROC, printf("found %s / %d on queue %d\n", 
+		rp->p_name, rp->p_endpoint, q););
+	assert(proc_is_runnable(rp));
+	if (priv(rp)->s_flags & BILLABLE)	 	
+		bill_ptr = rp;		/* bill for system time */
+	return rp;
+  }
+  return NULL;
+}

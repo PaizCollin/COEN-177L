@@ -1,0 +1,9 @@
+1. After running buyingMilksol1, both A and B have a chance at buying milk because they both enter the critical section 
+2. buyingMilksol2 results in no one purchasing milk because it contexts switches and both threads end up putting a note, so neither of them are able to go buy milk.
+3. buyingMilksol3 results in something similar to the previous solution, where neither thread ends up buying the milk because they both place down notes. This is because thread A waits 10 seconds so thread B then also places a note when it switches over, so now both have notes down and cannot enter their critical sections.
+4. The final solution, buyingMilksol4 finally yields success and thread A purchases the milk because it uses a while loop to continuously wait before attempting to enter its critical section. So whereas before it made one attempt, now it can wait for thread B to see noteA, fail, and then allow A to follow through with the milk purchase. 
+
+Step 2
+1. The main difference between threadSync.c and threadHello.c is that threadSync uses semaphores to enter its critical sections, while threadHello.c has no locking or safety mechanism before entering its critical section. 
+
+
